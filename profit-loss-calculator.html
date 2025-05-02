@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit/Loss Calculator - UniverseCalculator</title>
+    <meta name="description" content="Track business performance with detailed profit and loss analysis.">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .calculator-card {
+            background: linear-gradient(135deg, #f3f4f6, #ffffff);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .accent-gradient {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+        
+        .input-field {
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        
+        .input-field:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
+        }
+        
+        .result-card {
+            transition: all 0.3s ease;
+        }
+        
+        .result-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .profit-bg {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .loss-bg {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md py-4 px-6 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <i class="fas fa-calculator text-blue-600 text-2xl mr-2"></i>
+                <span class="font-bold text-xl text-gray-800">Universe<span class="text-yellow-500">Calculator</span></span>
+            </a>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#calculators" class="text-gray-600 hover:text-blue-600">Calculators</a>
+                <a href="index.html#features" class="text-gray-600 hover:text-blue-600">Features</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Global Shopping</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-500 hover:text-blue-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-16 left-0 right-0 bg-white shadow-md py-4 px-6">
+            <div class="flex flex-col space-y-4">
+                <a href="index.html#calculators" class="text-gray-600 hover:text-blue-600">Calculators</a>
+                <a href="index.html#features" class="text-gray-600 hover:text-blue-600">Features</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Global Shopping</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content Section -->
+    <div class="container mx-auto px-4 py-10">
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Profit/Loss Calculator</h1>
+            <p class="text-gray-600">Track business performance with detailed profit analysis</p>
+        </div>
+        
+        <!-- Main Calculator -->
+        <div class="max-w-3xl mx-auto">
+            <div class="calculator-card shadow-lg p-6 md:p-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Left Column - Inputs -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-6 text-gray-800">Enter Details</h3>
+                        
+                        <div class="space-y-4">
+                            <!-- Cost Price Section -->
+                            <div class="relative">
+                                <label class="block text-gray-700 mb-2" for="costPrice">Cost Price</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-tag"></i>
+                                    </span>
+                                    <input type="number" id="costPrice" class="input-field w-full p-2 pl-10 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter cost price">
+                                </div>
+                            </div>
+                            
+                            <!-- Selling Price Section -->
+                            <div class="relative">
+                                <label class="block text-gray-700 mb-2" for="sellingPrice">Selling Price</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-dollar-sign"></i>
+                                    </span>
+                                    <input type="number" id="sellingPrice" class="input-field w-full p-2 pl-10 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter selling price">
+                                </div>
+                            </div>
+                            
+                            <!-- Quantity Section -->
+                            <div class="relative">
+                                <label class="block text-gray-700 mb-2" for="quantity">Quantity</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-hashtag"></i>
+                                    </span>
+                                    <input type="number" id="quantity" class="input-field w-full p-2 pl-10 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter quantity" value="1">
+                                </div>
+                            </div>
+                            
+                            <!-- Additional Expenses -->
+                            <div class="relative">
+                                <label class="block text-gray-700 mb-2" for="expenses">Additional Expenses</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-receipt"></i>
+                                    </span>
+                                    <input type="number" id="expenses" class="input-field w-full p-2 pl-10 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter additional expenses" value="0">
+                                </div>
+                            </div>
+                            
+                            <!-- Tax Rate -->
+                            <div class="relative">
+                                <label class="block text-gray-700 mb-2" for="taxRate">Tax Rate (%)</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                                        <i class="fas fa-percent"></i>
+                                    </span>
+                                    <input type="number" id="taxRate" class="input-field w-full p-2 pl-10 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter tax rate" value="0">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button id="calculateBtn" class="w-full accent-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-300 mt-6">
+                            Calculate Profit/Loss
+                        </button>
+                    </div>
+                    
+                    <!-- Right Column - Results -->
+                    <div>
+                        <h3 class="text-xl font-semibold mb-6 text-gray-800">Results</h3>
+                        
+                        <div id="resultContainer" class="space-y-6">
+                            <!-- Initial state message -->
+                            <div class="text-center py-12 text-gray-500">
+                                <i class="fas fa-calculator text-5xl mb-4 text-purple-300"></i>
+                                <p>Enter values and click calculate to see results</p>
+                            </div>
+                            
+                            <!-- Results will be displayed here by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Information Section -->
+            <div class="mt-8 bg-purple-50 p-6 rounded-lg border border-purple-100">
+                <h3 class="text-lg font-semibold mb-3 text-purple-900">Understanding Profit and Loss</h3>
+                <div class="space-y-3 text-purple-800">
+                    <p><strong>Profit:</strong> The financial gain when selling price exceeds the cost price.</p>
+                    <p><strong>Loss:</strong> The financial loss when cost price exceeds the selling price.</p>
+                    <p><strong>Profit/Loss Percentage:</strong> The ratio of profit/loss to the cost price, expressed as a percentage.</p>
+                    <p><strong>Markup:</strong> The amount by which the cost of a product is increased to determine the selling price, expressed as a percentage.</p>
+                    <p><strong>Margin:</strong> The ratio of profit to revenue (selling price), expressed as a percentage.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">UniverseCalculator</h3>
+                    <p class="text-gray-400 mb-4">Your complete calculation toolbox for everyday needs.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Calculators</h3>
+                    <ul class="space-y-2">
+                        <li><a href="basic-calculator.html" class="text-gray-400 hover:text-white">Basic Calculator</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Scientific Calculator</a></li>
+                        <li><a href="profit-loss-calculator.html" class="text-gray-400 hover:text-white">Profit/Loss Calculator</a></li>
+                        <li><a href="percentage-calculator.html" class="text-gray-400 hover:text-white">Percentage Calculator</a></li>
+                        <li><a href="currency-converter.html" class="text-gray-400 hover:text-white">Currency Converter</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Feedback</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <p class="text-gray-400 mb-2">Have questions or suggestions?</p>
+                    <a href="#" class="text-blue-400 hover:text-blue-300 inline-block mb-4">Send us feedback</a>
+                    <p class="text-gray-400">Email: contact@universecalculator.com</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 UniverseCalculator. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // Profit/Loss Calculator Logic
+        document.getElementById('calculateBtn').addEventListener('click', calculateProfitLoss);
+        
+        // Function to calculate profit or loss
+        function calculateProfitLoss() {
+            // Get input values
+            const costPrice = parseFloat(document.getElementById('costPrice').value);
+            const sellingPrice = parseFloat(document.getElementById('sellingPrice').value);
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const expenses = parseFloat(document.getElementById('expenses').value) || 0;
+            const taxRate = parseFloat(document.getElementById('taxRate').value) || 0;
+            
+            // Validate inputs
+            if (isNaN(costPrice) || isNaN(sellingPrice)) {
+                showError('Please enter valid cost price and selling price');
+                return;
+            }
+            
+            if (costPrice <= 0 || sellingPrice <= 0) {
+                showError('Cost price and selling price must be greater than zero');
+                return;
+            }
+            
+            // Calculate total costs and revenue
+            const totalCostPrice = costPrice * quantity;
+            const totalExpenses = expenses;
+            const totalCost = totalCostPrice + totalExpenses;
+            
+            const totalSellingPrice = sellingPrice * quantity;
+            const taxAmount = (totalSellingPrice * taxRate) / 100;
+            const netSellingPrice = totalSellingPrice - taxAmount;
+            
+            // Calculate profit or loss
+            const absoluteProfitLoss = netSellingPrice - totalCost;
+            const isProfitable = absoluteProfitLoss >= 0;
+            
+            // Calculate percentages
+            const profitLossPercentage = (Math.abs(absoluteProfitLoss) / totalCost) * 100;
+            const markup = ((sellingPrice - costPrice) / costPrice) * 100;
+            const margin = isProfitable ? (absoluteProfitLoss / netSellingPrice) * 100 : 0;
+            
+            // Format currency for display
+            const formatCurrency = (value) => {
+                return value.toFixed(2);
+            };
+            
+            // Display results
+            const resultHTML = `
+                <div class="${isProfitable ? 'profit-bg' : 'loss-bg'} text-white p-4 rounded-lg mb-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xl font-bold">${isProfitable ? 'Profit' : 'Loss'}</h3>
+                        <div class="text-2xl font-bold">${formatCurrency(Math.abs(absoluteProfitLoss))}</div>
+                    </div>
+                    <div class="text-sm opacity-90 mt-1">${profitLossPercentage.toFixed(2)}%</div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="result-card bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Total Cost:</span>
+                            <span class="font-medium">${formatCurrency(totalCost)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Net Selling Price:</span>
+                            <span class="font-medium">${formatCurrency(netSellingPrice)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Tax Amount:</span>
+                            <span class="font-medium">${formatCurrency(taxAmount)}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="result-card bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Markup:</span>
+                            <span class="font-medium">${markup.toFixed(2)}%</span>
+                        </div>
+                    </div>
+                    
+                    ${isProfitable ? `
+                    <div class="result-card bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Profit Margin:</span>
+                            <span class="font-medium">${margin.toFixed(2)}%</span>
+                        </div>
+                    </div>
+                    ` : ''}
+                    
+                    <div class="result-card bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Breakeven Price:</span>
+                            <span class="font-medium">${formatCurrency(totalCost / quantity)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('resultContainer').innerHTML = resultHTML;
+        }
+        
+        // Show error message
+        function showError(message) {
+            const errorHTML = `
+                <div class="bg-red-100 border border-red-200 text-red-800 p-4 rounded-lg">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                        <span>${message}</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('resultContainer').innerHTML = errorHTML;
+        }
+    </script>
+</body>
+</html>

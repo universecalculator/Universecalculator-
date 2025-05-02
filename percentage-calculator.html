@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Calculator - UniverseCalculator</title>
+    <meta name="description" content="Calculate percentages, increases, decreases, and more with our Percentage Calculator.">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .calculator-card {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        
+        .card-header {
+            height: 8px;
+        }
+        
+        .yellow-gradient {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        }
+        
+        .input-field {
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        
+        .input-field:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md py-4 px-6 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <i class="fas fa-calculator text-blue-600 text-2xl mr-2"></i>
+                <span class="font-bold text-xl text-gray-800">Universe<span class="text-yellow-500">Calculator</span></span>
+            </a>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#calculators" class="text-gray-600 hover:text-blue-600">Calculators</a>
+                <a href="index.html#features" class="text-gray-600 hover:text-blue-600">Features</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Global Shopping</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-500 hover:text-blue-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-16 left-0 right-0 bg-white shadow-md py-4 px-6">
+            <div class="flex flex-col space-y-4">
+                <a href="index.html#calculators" class="text-gray-600 hover:text-blue-600">Calculators</a>
+                <a href="index.html#features" class="text-gray-600 hover:text-blue-600">Features</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Global Shopping</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content Section -->
+    <div class="container mx-auto px-4 py-10">
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Percentage Calculator</h1>
+            <p class="text-gray-600">Calculate percentages, increases, decreases, and more</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <!-- Calculator 1: Find Percentage -->
+            <div class="calculator-card bg-white shadow-lg">
+                <div class="card-header yellow-gradient"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Find Percentage</h3>
+                    <p class="text-gray-600 mb-6">What is X% of Y?</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="percentage1">Percentage (%)</label>
+                            <input type="number" id="percentage1" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter percentage">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="value1">Value</label>
+                            <input type="number" id="value1" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter value">
+                        </div>
+                        
+                        <button id="calculate1" class="w-full yellow-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-300">
+                            Calculate
+                        </button>
+                        
+                        <div class="mt-4">
+                            <label class="block text-gray-700 mb-2">Result</label>
+                            <div id="result1" class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-lg font-medium text-gray-800">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calculator 2: Find Value -->
+            <div class="calculator-card bg-white shadow-lg">
+                <div class="card-header yellow-gradient"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Find Value</h3>
+                    <p class="text-gray-600 mb-6">X is what percent of Y?</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="part2">Part (X)</label>
+                            <input type="number" id="part2" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter part value">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="whole2">Whole (Y)</label>
+                            <input type="number" id="whole2" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter whole value">
+                        </div>
+                        
+                        <button id="calculate2" class="w-full yellow-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-300">
+                            Calculate
+                        </button>
+                        
+                        <div class="mt-4">
+                            <label class="block text-gray-700 mb-2">Result</label>
+                            <div id="result2" class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-lg font-medium text-gray-800">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calculator 3: Find Original Value -->
+            <div class="calculator-card bg-white shadow-lg">
+                <div class="card-header yellow-gradient"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Find Original Value</h3>
+                    <p class="text-gray-600 mb-6">X is Y% of what value?</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="result3">Result (X)</label>
+                            <input type="number" id="result3" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter result value">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="percentage3">Percentage (Y%)</label>
+                            <input type="number" id="percentage3" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter percentage">
+                        </div>
+                        
+                        <button id="calculate3" class="w-full yellow-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-300">
+                            Calculate
+                        </button>
+                        
+                        <div class="mt-4">
+                            <label class="block text-gray-700 mb-2">Result</label>
+                            <div id="result3-output" class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-lg font-medium text-gray-800">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calculator 4: Percentage Increase/Decrease -->
+            <div class="calculator-card bg-white shadow-lg">
+                <div class="card-header yellow-gradient"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Percentage Change</h3>
+                    <p class="text-gray-600 mb-6">Calculate increase or decrease in percentage</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="initial4">Initial Value</label>
+                            <input type="number" id="initial4" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter initial value">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="final4">Final Value</label>
+                            <input type="number" id="final4" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter final value">
+                        </div>
+                        
+                        <button id="calculate4" class="w-full yellow-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-300">
+                            Calculate
+                        </button>
+                        
+                        <div class="mt-4">
+                            <label class="block text-gray-700 mb-2">Result</label>
+                            <div id="result4" class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-lg font-medium text-gray-800">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calculator 5: Add Percentage -->
+            <div class="calculator-card bg-white shadow-lg">
+                <div class="card-header yellow-gradient"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Add Percentage</h3>
+                    <p class="text-gray-600 mb-6">Increase a value by specified percentage</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="value5">Value</label>
+                            <input type="number" id="value5" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter value">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="percentage5">Percentage to Add (%)</label>
+                            <input type="number" id="percentage5" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter percentage">
+                        </div>
+                        
+                        <button id="calculate5" class="w-full yellow-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-300">
+                            Calculate
+                        </button>
+                        
+                        <div class="mt-4">
+                            <label class="block text-gray-700 mb-2">Result</label>
+                            <div id="result5" class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-lg font-medium text-gray-800">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calculator 6: Subtract Percentage -->
+            <div class="calculator-card bg-white shadow-lg">
+                <div class="card-header yellow-gradient"></div>
+                <div class="p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Subtract Percentage</h3>
+                    <p class="text-gray-600 mb-6">Decrease a value by specified percentage</p>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="value6">Value</label>
+                            <input type="number" id="value6" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter value">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-700 mb-2" for="percentage6">Percentage to Subtract (%)</label>
+                            <input type="number" id="percentage6" class="input-field w-full p-2 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter percentage">
+                        </div>
+                        
+                        <button id="calculate6" class="w-full yellow-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-300">
+                            Calculate
+                        </button>
+                        
+                        <div class="mt-4">
+                            <label class="block text-gray-700 mb-2">Result</label>
+                            <div id="result6" class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg text-lg font-medium text-gray-800">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">UniverseCalculator</h3>
+                    <p class="text-gray-400 mb-4">Your complete calculation toolbox for everyday needs.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Calculators</h3>
+                    <ul class="space-y-2">
+                        <li><a href="basic-calculator.html" class="text-gray-400 hover:text-white">Basic Calculator</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Scientific Calculator</a></li>
+                        <li><a href="profit-loss-calculator.html" class="text-gray-400 hover:text-white">Profit/Loss Calculator</a></li>
+                        <li><a href="percentage-calculator.html" class="text-gray-400 hover:text-white">Percentage Calculator</a></li>
+                        <li><a href="currency-converter.html" class="text-gray-400 hover:text-white">Currency Converter</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Feedback</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <p class="text-gray-400 mb-2">Have questions or suggestions?</p>
+                    <a href="#" class="text-blue-400 hover:text-blue-300 inline-block mb-4">Send us feedback</a>
+                    <p class="text-gray-400">Email: contact@universecalculator.com</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 UniverseCalculator. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // Calculator 1: Find Percentage (What is X% of Y?)
+        document.getElementById('calculate1').addEventListener('click', function() {
+            const percentage = parseFloat(document.getElementById('percentage1').value);
+            const value = parseFloat(document.getElementById('value1').value);
+            
+            if (isNaN(percentage) || isNaN(value)) {
+                document.getElementById('result1').textContent = 'Please enter valid numbers';
+                return;
+            }
+            
+            const result = (percentage / 100) * value;
+            document.getElementById('result1').textContent = result.toFixed(2);
+        });
+        
+        // Calculator 2: Find Value (X is what percent of Y?)
+        document.getElementById('calculate2').addEventListener('click', function() {
+            const part = parseFloat(document.getElementById('part2').value);
+            const whole = parseFloat(document.getElementById('whole2').value);
+            
+            if (isNaN(part) || isNaN(whole)) {
+                document.getElementById('result2').textContent = 'Please enter valid numbers';
+                return;
+            }
+            
+            if (whole === 0) {
+                document.getElementById('result2').textContent = 'Cannot divide by zero';
+                return;
+            }
+            
+            const result = (part / whole) * 100;
+            document.getElementById('result2').textContent = result.toFixed(2) + '%';
+        });
+        
+        // Calculator 3: Find Original Value (X is Y% of what value?)
+        document.getElementById('calculate3').addEventListener('click', function() {
+            const resultValue = parseFloat(document.getElementById('result3').value);
+            const percentage = parseFloat(document.getElementById('percentage3').value);
+            
+            if (isNaN(resultValue) || isNaN(percentage)) {
+                document.getElementById('result3-output').textContent = 'Please enter valid numbers';
+                return;
+            }
+            
+            if (percentage === 0) {
+                document.getElementById('result3-output').textContent = 'Percentage cannot be zero';
+                return;
+            }
+            
+            const originalValue = (resultValue * 100) / percentage;
+            document.getElementById('result3-output').textContent = originalValue.toFixed(2);
+        });
+        
+        // Calculator 4: Percentage Increase/Decrease
+        document.getElementById('calculate4').addEventListener('click', function() {
+            const initialValue = parseFloat(document.getElementById('initial4').value);
+            const finalValue = parseFloat(document.getElementById('final4').value);
+            
+            if (isNaN(initialValue) || isNaN(finalValue)) {
+                document.getElementById('result4').textContent = 'Please enter valid numbers';
+                return;
+            }
+            
+            if (initialValue === 0) {
+                document.getElementById('result4').textContent = 'Initial value cannot be zero';
+                return;
+            }
+            
+            const change = ((finalValue - initialValue) / initialValue) * 100;
+            const resultText = change >= 0 ? 
+                `Increase: ${change.toFixed(2)}%` : 
+                `Decrease: ${Math.abs(change).toFixed(2)}%`;
+            
+            document.getElementById('result4').textContent = resultText;
+        });
+        
+        // Calculator 5: Add Percentage
+        document.getElementById('calculate5').addEventListener('click', function() {
+            const value = parseFloat(document.getElementById('value5').value);
+            const percentage = parseFloat(document.getElementById('percentage5').value);
+            
+            if (isNaN(value) || isNaN(percentage)) {
+                document.getElementById('result5').textContent = 'Please enter valid numbers';
+                return;
+            }
+            
+            const result = value + (value * percentage / 100);
+            document.getElementById('result5').textContent = result.toFixed(2);
+        });
+        
+        // Calculator 6: Subtract Percentage
+        document.getElementById('calculate6').addEventListener('click', function() {
+            const value = parseFloat(document.getElementById('value6').value);
+            const percentage = parseFloat(document.getElementById('percentage6').value);
+            
+            if (isNaN(value) || isNaN(percentage)) {
+                document.getElementById('result6').textContent = 'Please enter valid numbers';
+                return;
+            }
+            
+            const result = value - (value * percentage / 100);
+            document.getElementById('result6').textContent = result.toFixed(2);
+        });
+    </script>
+</body>
+</html>

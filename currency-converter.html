@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter - UniverseCalculator</title>
+    <meta name="description" content="Convert between different currencies with live exchange rates.">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .converter-card {
+            background-color: white;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .red-gradient {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+        
+        .input-field {
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+        }
+        
+        .input-field:focus {
+            border-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+        
+        .currency-flag {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9fafb;
+            margin-right: 8px;
+        }
+        
+        .swap-button {
+            width: 40px;
+            height: 40px;
+            background-color: #fee2e2;
+            color: #ef4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .swap-button:hover {
+            background-color: #fecaca;
+            transform: rotate(180deg);
+        }
+        
+        .currency-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .currency-item {
+            transition: all 0.2s ease;
+        }
+        
+        .currency-item:hover {
+            background-color: #fee2e2;
+        }
+        
+        .popular-currency {
+            transition: all 0.2s ease;
+        }
+        
+        .popular-currency:hover {
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md py-4 px-6 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <i class="fas fa-calculator text-blue-600 text-2xl mr-2"></i>
+                <span class="font-bold text-xl text-gray-800">Universe<span class="text-yellow-500">Calculator</span></span>
+            </a>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#calculators" class="text-gray-600 hover:text-blue-600">Calculators</a>
+                <a href="index.html#features" class="text-gray-600 hover:text-blue-600">Features</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Global Shopping</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-500 hover:text-blue-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-16 left-0 right-0 bg-white shadow-md py-4 px-6">
+            <div class="flex flex-col space-y-4">
+                <a href="index.html#calculators" class="text-gray-600 hover:text-blue-600">Calculators</a>
+                <a href="index.html#features" class="text-gray-600 hover:text-blue-600">Features</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Global Shopping</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content Section -->
+    <div class="container mx-auto px-4 py-10">
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Currency Converter</h1>
+            <p class="text-gray-600">Convert between different currencies with live exchange rates</p>
+        </div>
+        
+        <div class="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Main Converter Card -->
+            <div class="converter-card shadow-lg md:col-span-2">
+                <!-- Card Header -->
+                <div class="red-gradient p-4 text-white flex justify-between items-center">
+                    <h3 class="text-xl font-semibold">Currency Converter</h3>
+                    <div id="last-updated" class="text-sm opacity-80">Last updated: Fetching...</div>
+                </div>
+                
+                <!-- Card Content -->
+                <div class="p-6">
+                    <!-- Amount Input -->
+                    <div class="mb-6">
+                        <label class="block text-gray-700 mb-2" for="amount">Amount</label>
+                        <div class="relative">
+                            <input type="number" id="amount" class="input-field w-full p-3 rounded-lg bg-gray-50 focus:outline-none" placeholder="Enter amount" value="1">
+                        </div>
+                    </div>
+                    
+                    <!-- Currency Selection Row -->
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-center mb-6">
+                        <!-- From Currency -->
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 mb-2">From</label>
+                            <div class="relative">
+                                <button id="from-currency" class="input-field w-full p-3 rounded-lg bg-gray-50 focus:outline-none text-left flex items-center justify-between" onclick="toggleCurrencyList('from')">
+                                    <div class="flex items-center">
+                                        <div class="currency-flag" id="from-flag">USD</div>
+                                        <span id="from-code">USD</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                
+                                <!-- Currency Dropdown (Hidden initially) -->
+                                <div id="from-currency-list" class="hidden absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-10 currency-list border border-gray-200">
+                                    <div class="p-2 sticky top-0 bg-white border-b border-gray-200">
+                                        <input type="text" placeholder="Search currency..." class="w-full p-2 rounded-lg bg-gray-50 input-field" id="from-search">
+                                    </div>
+                                    <div id="from-currencies" class="p-2">
+                                        <!-- Currency items will be dynamically added here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Swap Button -->
+                        <div class="flex justify-center">
+                            <div class="swap-button" id="swap-button">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                        </div>
+                        
+                        <!-- To Currency -->
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 mb-2">To</label>
+                            <div class="relative">
+                                <button id="to-currency" class="input-field w-full p-3 rounded-lg bg-gray-50 focus:outline-none text-left flex items-center justify-between" onclick="toggleCurrencyList('to')">
+                                    <div class="flex items-center">
+                                        <div class="currency-flag" id="to-flag">INR</div>
+                                        <span id="to-code">INR</span>
+                                    </div>
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                
+                                <!-- Currency Dropdown (Hidden initially) -->
+                                <div id="to-currency-list" class="hidden absolute top-full left-0 right-0 mt-1 bg-white rounded-lg shadow-lg z-10 currency-list border border-gray-200">
+                                    <div class="p-2 sticky top-0 bg-white border-b border-gray-200">
+                                        <input type="text" placeholder="Search currency..." class="w-full p-2 rounded-lg bg-gray-50 input-field" id="to-search">
+                                    </div>
+                                    <div id="to-currencies" class="p-2">
+                                        <!-- Currency items will be dynamically added here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Convert Button -->
+                    <button id="convert-btn" class="w-full red-gradient text-white py-3 rounded-lg font-medium hover:opacity-90 transition duration-300 mb-6">
+                        Convert
+                    </button>
+                    
+                    <!-- Conversion Result -->
+                    <div id="result" class="bg-red-50 border border-red-100 rounded-lg p-5 text-center">
+                        <div class="text-sm text-gray-500 mb-1">Conversion Result</div>
+                        <div id="conversion-amount" class="text-2xl font-bold text-gray-800">1 USD = 74.50 INR</div>
+                        <div id="conversion-text" class="text-sm text-gray-600 mt-1">1 US Dollar = 74.50 Indian Rupee</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Popular Currencies Card -->
+            <div class="converter-card shadow-lg h-fit">
+                <div class="red-gradient p-4 text-white">
+                    <h3 class="text-xl font-semibold">Popular Currencies</h3>
+                </div>
+                
+                <div class="p-4">
+                    <div class="text-sm text-gray-500 mb-2">Base: <span id="base-currency">USD</span></div>
+                    
+                    <!-- Popular currencies list -->
+                    <div id="popular-currencies" class="space-y-3">
+                        <!-- These will be filled in by JavaScript -->
+                        <div class="popular-currency p-3 rounded-lg border border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="currency-flag">EUR</div>
+                                <span>EUR</span>
+                            </div>
+                            <div class="text-gray-800 font-medium">0.85</div>
+                        </div>
+                        <div class="popular-currency p-3 rounded-lg border border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="currency-flag">GBP</div>
+                                <span>GBP</span>
+                            </div>
+                            <div class="text-gray-800 font-medium">0.73</div>
+                        </div>
+                        <div class="popular-currency p-3 rounded-lg border border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="currency-flag">JPY</div>
+                                <span>JPY</span>
+                            </div>
+                            <div class="text-gray-800 font-medium">110.21</div>
+                        </div>
+                        <div class="popular-currency p-3 rounded-lg border border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="currency-flag">CAD</div>
+                                <span>CAD</span>
+                            </div>
+                            <div class="text-gray-800 font-medium">1.25</div>
+                        </div>
+                        <div class="popular-currency p-3 rounded-lg border border-gray-200 flex justify-between items-center">
+                            <div class="flex items-center">
+                                <div class="currency-flag">AUD</div>
+                                <span>AUD</span>
+                            </div>
+                            <div class="text-gray-800 font-medium">1.36</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Information Card -->
+        <div class="max-w-3xl mx-auto mt-8 bg-red-50 p-6 rounded-lg border border-red-100">
+            <h3 class="text-lg font-semibold mb-3 text-red-900">About Exchange Rates</h3>
+            <p class="text-red-800 mb-3">The exchange rates provided are for informational purposes only. They are not intended to be used for actual currency trading or business transactions.</p>
+            <p class="text-red-800">Exchange rates are subject to fluctuations and may vary at the time of actual currency conversion. Always verify with financial institutions for the most current rates.</p>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">UniverseCalculator</h3>
+                    <p class="text-gray-400 mb-4">Your complete calculation toolbox for everyday needs.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Calculators</h3>
+                    <ul class="space-y-2">
+                        <li><a href="basic-calculator.html" class="text-gray-400 hover:text-white">Basic Calculator</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Scientific Calculator</a></li>
+                        <li><a href="profit-loss-calculator.html" class="text-gray-400 hover:text-white">Profit/Loss Calculator</a></li>
+                        <li><a href="percentage-calculator.html" class="text-gray-400 hover:text-white">Percentage Calculator</a></li>
+                        <li><a href="currency-converter.html" class="text-gray-400 hover:text-white">Currency Converter</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Feedback</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <p class="text-gray-400 mb-2">Have questions or suggestions?</p>
+                    <a href="#" class="text-blue-400 hover:text-blue-300 inline-block mb-4">Send us feedback</a>
+                    <p class="text-gray-400">Email: contact@universecalculator.com</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 UniverseCalculator. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // Currency Converter Code
+        // Currency data (normally this would be fetched from an API)
+        const currencyData = {
+            "result": "success",
+            "base_code": "USD",
+            "conversion_rates": {
+                "USD": 1,
+                "AED": 3.6725,
+                "AFN": 86.8875,
+                "ALL": 101.6171,
+                "AMD": 389.1919,
+                "ANG": 1.7900,
+                "AOA": 824.6612,
+                "ARS": 714.9916,
+                "AUD": 1.5181,
+                "AWG": 1.7900,
+                "AZN": 1.7000,
+                "BAM": 1.7901,
+                "BBD": 2.0000,
+                "BDT": 109.7557,
+                "BGN": 1.7914,
+                "BHD": 0.3760,
+                "BIF": 2834.8157,
+                "BMD": 1.0000,
+                "BND": 1.3426,
+                "BOB": 6.9100,
+                "BRL": 5.1017,
+                "BSD": 1.0000,
+                "BTN": 83.0983,
+                "BWP": 13.4932,
+                "BYN": 3.2399,
+                "BZD": 2.0000,
+                "CAD": 1.3664,
+                "CDF": 2695.0325,
+                "CHF": 0.8762,
+                "CLP": 905.1041,
+                "CNY": 7.0881,
+                "COP": 3933.7631,
+                "CRC": 510.1939,
+                "CUP": 24.0000,
+                "CVE": 100.8497,
+                "CZK": 22.9134,
+                "DJF": 177.7210,
+                "DKK": 6.8304,
+                "DOP": 58.2000,
+                "DZD": 134.3883,
+                "EGP": 47.7437,
+                "ERN": 15.0000,
+                "ETB": 56.6471,
+                "EUR": 0.9152,
+                "FJD": 2.2437,
+                "FKP": 0.7829,
+                "FOK": 6.8304,
+                "GBP": 0.7829,
+                "GEL": 2.7002,
+                "GGP": 0.7829,
+                "GHS": 14.7939,
+                "GIP": 0.7829,
+                "GMD": 67.3000,
+                "GNF": 8608.7384,
+                "GTQ": 7.7500,
+                "GYD": 209.0845,
+                "HKD": 7.8067,
+                "HNL": 24.6500,
+                "HRK": 6.8974,
+                "HTG": 132.0900,
+                "HUF": 356.7900,
+                "IDR": 15725.5310,
+                "ILS": 3.6891,
+                "IMP": 0.7829,
+                "INR": 83.1000,
+                "IQD": 1308.7672,
+                "IRR": 42000.0000,
+                "ISK": 137.0401,
+                "JEP": 0.7829,
+                "JMD": 155.4487,
+                "JOD": 0.7090,
+                "JPY": 153.9952,
+                "KES": 130.5000,
+                "KGS": 89.3099,
+                "KHR": 4099.1193,
+                "KID": 1.5181,
+                "KMF": 450.4503,
+                "KRW": 1366.0195,
+                "KWD": 0.3069,
+                "KYD": 0.8333,
+                "KZT": 448.6902,
+                "LAK": 20621.0376,
+                "LBP": 90000.0000,
+                "LKR": 303.4912,
+                "LRD": 191.1000,
+                "LSL": 18.4500,
+                "LYD": 4.8138,
+                "MAD": 9.9615,
+                "MDL": 17.7037,
+                "MGA": 4430.4167,
+                "MKD": 56.4144,
+                "MMK": 2099.6429,
+                "MNT": 3443.0889,
+                "MOP": 8.0409,
+                "MRU": 39.2000,
+                "MUR": 45.6662,
+                "MVR": 15.4500,
+                "MWK": 1683.4515,
+                "MXN": 17.0070,
+                "MYR": 4.7465,
+                "MZN": 63.8751,
+                "NAD": 18.4500,
+                "NGN": 1450.0000,
+                "NIO": 36.7500,
+                "NOK": 10.7051,
+                "NPR": 132.9572,
+                "NZD": 1.6510,
+                "OMR": 0.3840,
+                "PAB": 1.0000,
+                "PEN": 3.7365,
+                "PGK": 3.8090,
+                "PHP": 57.2950,
+                "PKR": 278.0003,
+                "PLN": 3.9279,
+                "PYG": 7363.3349,
+                "QAR": 3.6400,
+                "RON": 4.5542,
+                "RSD": 107.2421,
+                "RUB": 92.2501,
+                "RWF": 1285.5918,
+                "SAR": 3.7500,
+                "SBD": 8.3908,
+                "SCR": 13.2773,
+                "SDG": 601.0000,
+                "SEK": 10.4755,
+                "SGD": 1.3432,
+                "SHP": 0.7829,
+                "SLE": 22.0425,
+                "SLL": 22042.4969,
+                "SOS": 571.9964,
+                "SRD": 36.8358,
+                "SSP": 1008.5753,
+                "STN": 22.4323,
+                "SYP": 12995.0000,
+                "SZL": 18.4500,
+                "THB": 36.2300,
+                "TJS": 10.9362,
+                "TMT": 3.5000,
+                "TND": 3.1245,
+                "TOP": 2.3415,
+                "TRY": 32.0965,
+                "TTD": 6.7496,
+                "TVD": 1.5181,
+                "TWD": 32.2890,
+                "TZS": 2580.0000,
+                "UAH": 39.5974,
+                "UGX": 3761.6039,
+                "UYU": 38.6647,
+                "UZS": 12775.0000,
+                "VES": 36.3373,
+                "VND": 25235.0000,
+                "VUV": 119.6124,
+                "WST": 2.7405,
+                "XAF": 600.6004,
+                "XCD": 2.7000,
+                "XDR": 0.7476,
+                "XOF": 600.6004,
+                "XPF": 109.2109,
+                "YER": 250.3502,
+                "ZAR": 18.4476,
+                "ZMW": 24.6881,
+                "ZWL": 6830.5947
+            },
+            "documentation": "https://www.exchangerate-api.com/docs",
+            "terms_of_use": "https://www.exchangerate-api.com/terms",
+            "time_last_update_unix": 1714435201,
+            "time_last_update_utc": "Tue, 30 Apr 2024 00:00:01 +0000",
+            "time_next_update_unix": 1714521601,
+            "time_next_update_utc": "Wed, 01 May 2024 00:00:01 +0000"
+        };
+        
+        // Currency names mapping
+        const currencyNames = {
+            "USD": "US Dollar",
+            "EUR": "Euro",
+            "GBP": "British Pound",
+            "JPY": "Japanese Yen",
+            "CAD": "Canadian Dollar",
+            "AUD": "Australian Dollar",
+            "CHF": "Swiss Franc",
+            "CNY": "Chinese Yuan",
+            "INR": "Indian Rupee",
+            "SGD": "Singapore Dollar",
+            "MXN": "Mexican Peso",
+            "NZD": "New Zealand Dollar",
+            "SEK": "Swedish Krona",
+            "RUB": "Russian Ruble",
+            "ZAR": "South African Rand",
+            "TRY": "Turkish Lira",
+            "BRL": "Brazilian Real",
+            "THB": "Thai Baht",
+            "AED": "UAE Dirham",
+            "HKD": "Hong Kong Dollar"
+        };
+        
+        // Popular currencies (for the side panel)
+        const popularCurrencies = ['EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'INR', 'CNY', 'SGD', 'AED', 'THB'];
+        
+        // Default currencies
+        let fromCurrency = 'USD';
+        let toCurrency = 'INR';
+        
+        // Initialize the converter
+        function initCurrencyConverter() {
+            // Set last updated time
+            const lastUpdated = new Date(currencyData.time_last_update_unix * 1000);
+            document.getElementById('last-updated').textContent = `Last updated: ${lastUpdated.toLocaleDateString()}`;
+            
+            // Set base currency for popular currencies
+            document.getElementById('base-currency').textContent = fromCurrency;
+            
+            // Populate currency lists
+            populateCurrencyLists();
+            
+            // Populate popular currencies
+            updatePopularCurrencies();
+            
+            // Set up event listeners
+            document.getElementById('convert-btn').addEventListener('click', performConversion);
+            document.getElementById('swap-button').addEventListener('click', swapCurrencies);
+            document.getElementById('from-search').addEventListener('input', function() {
+                filterCurrencyList('from', this.value);
+            });
+            document.getElementById('to-search').addEventListener('input', function() {
+                filterCurrencyList('to', this.value);
+            });
+            
+            // Initial conversion
+            performConversion();
+        }
+        
+        // Populate currency lists
+        function populateCurrencyLists() {
+            const fromCurrenciesEl = document.getElementById('from-currencies');
+            const toCurrenciesEl = document.getElementById('to-currencies');
+            
+            // Clear existing items
+            fromCurrenciesEl.innerHTML = '';
+            toCurrenciesEl.innerHTML = '';
+            
+            // Add currencies to the lists
+            Object.keys(currencyData.conversion_rates).forEach(code => {
+                const name = currencyNames[code] || code;
+                
+                // From currencies
+                const fromItem = document.createElement('div');
+                fromItem.className = 'currency-item p-2 cursor-pointer rounded flex items-center';
+                fromItem.innerHTML = `
+                    <div class="currency-flag">${code.slice(0, 2)}</div>
+                    <div>
+                        <div class="font-medium">${code}</div>
+                        <div class="text-xs text-gray-500">${name}</div>
+                    </div>
+                `;
+                fromItem.addEventListener('click', () => selectCurrency('from', code));
+                fromCurrenciesEl.appendChild(fromItem);
+                
+                // To currencies
+                const toItem = document.createElement('div');
+                toItem.className = 'currency-item p-2 cursor-pointer rounded flex items-center';
+                toItem.innerHTML = `
+                    <div class="currency-flag">${code.slice(0, 2)}</div>
+                    <div>
+                        <div class="font-medium">${code}</div>
+                        <div class="text-xs text-gray-500">${name}</div>
+                    </div>
+                `;
+                toItem.addEventListener('click', () => selectCurrency('to', code));
+                toCurrenciesEl.appendChild(toItem);
+            });
+        }
+        
+        // Filter currency list
+        function filterCurrencyList(type, searchText) {
+            const currencyItems = document.querySelectorAll(`#${type}-currencies .currency-item`);
+            searchText = searchText.toLowerCase();
+            
+            currencyItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchText)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        // Toggle currency list visibility
+        function toggleCurrencyList(type) {
+            const currencyList = document.getElementById(`${type}-currency-list`);
+            document.getElementById(`${type}-currency-list`).classList.toggle('hidden');
+            
+            // Close the other currency list
+            const otherType = type === 'from' ? 'to' : 'from';
+            document.getElementById(`${otherType}-currency-list`).classList.add('hidden');
+            
+            // Focus on the search input
+            if (!currencyList.classList.contains('hidden')) {
+                document.getElementById(`${type}-search`).focus();
+            }
+        }
+        
+        // Select a currency
+        function selectCurrency(type, code) {
+            if (type === 'from') {
+                fromCurrency = code;
+                document.getElementById('from-code').textContent = code;
+                document.getElementById('from-flag').textContent = code.slice(0, 2);
+            } else {
+                toCurrency = code;
+                document.getElementById('to-code').textContent = code;
+                document.getElementById('to-flag').textContent = code.slice(0, 2);
+            }
+            
+            // Hide the currency list
+            document.getElementById(`${type}-currency-list`).classList.add('hidden');
+            
+            // Update conversion
+            performConversion();
+            
+            // Update popular currencies if 'from' currency changes
+            if (type === 'from') {
+                document.getElementById('base-currency').textContent = fromCurrency;
+                updatePopularCurrencies();
+            }
+        }
+        
+        // Swap currencies
+        function swapCurrencies() {
+            const temp = fromCurrency;
+            fromCurrency = toCurrency;
+            toCurrency = temp;
+            
+            // Update UI
+            document.getElementById('from-code').textContent = fromCurrency;
+            document.getElementById('from-flag').textContent = fromCurrency.slice(0, 2);
+            document.getElementById('to-code').textContent = toCurrency;
+            document.getElementById('to-flag').textContent = toCurrency.slice(0, 2);
+            
+            // Update conversion
+            performConversion();
+            
+            // Update popular currencies
+            document.getElementById('base-currency').textContent = fromCurrency;
+            updatePopularCurrencies();
+        }
+        
+        // Perform conversion
+        function performConversion() {
+            const amount = parseFloat(document.getElementById('amount').value) || 1;
+            
+            // Get exchange rates
+            const fromRate = currencyData.conversion_rates[fromCurrency];
+            const toRate = currencyData.conversion_rates[toCurrency];
+            
+            // Calculate conversion
+            const convertedAmount = (amount * toRate) / fromRate;
+            
+            // Format for display
+            const formattedAmount = new Intl.NumberFormat('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 6
+            }).format(convertedAmount);
+            
+            // Update result
+            document.getElementById('conversion-amount').textContent = 
+                `${amount} ${fromCurrency} = ${formattedAmount} ${toCurrency}`;
+            
+            const fromName = currencyNames[fromCurrency] || fromCurrency;
+            const toName = currencyNames[toCurrency] || toCurrency;
+            
+            document.getElementById('conversion-text').textContent = 
+                `${amount} ${fromName} = ${formattedAmount} ${toName}`;
+        }
+        
+        // Update popular currencies
+        function updatePopularCurrencies() {
+            const popularCurrenciesEl = document.getElementById('popular-currencies');
+            popularCurrenciesEl.innerHTML = '';
+            
+            // Base rate for conversion
+            const baseRate = currencyData.conversion_rates[fromCurrency];
+            
+            // Create popular currency items
+            popularCurrencies.forEach(code => {
+                if (code === fromCurrency) return; // Skip base currency
+                
+                const rate = currencyData.conversion_rates[code];
+                const convertedRate = rate / baseRate;
+                
+                const formattedRate = new Intl.NumberFormat('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 4
+                }).format(convertedRate);
+                
+                const item = document.createElement('div');
+                item.className = 'popular-currency p-3 rounded-lg border border-gray-200 flex justify-between items-center';
+                item.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="currency-flag">${code.slice(0, 2)}</div>
+                        <span>${code}</span>
+                    </div>
+                    <div class="text-gray-800 font-medium">${formattedRate}</div>
+                `;
+                
+                // Add click event to set these currencies
+                item.addEventListener('click', () => {
+                    selectCurrency('to', code);
+                });
+                
+                popularCurrenciesEl.appendChild(item);
+            });
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', initCurrencyConverter);
+        
+        // Close currency lists when clicking outside
+        document.addEventListener('click', function(event) {
+            const fromButton = document.getElementById('from-currency');
+            const toButton = document.getElementById('to-currency');
+            const fromList = document.getElementById('from-currency-list');
+            const toList = document.getElementById('to-currency-list');
+            
+            if (!fromButton.contains(event.target) && !fromList.contains(event.target)) {
+                fromList.classList.add('hidden');
+            }
+            
+            if (!toButton.contains(event.target) && !toList.contains(event.target)) {
+                toList.classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

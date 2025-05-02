@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator - UniverseCalculator</title>
+    <meta name="description" content="Perform simple arithmetic operations quickly and easily with our Basic Calculator.">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .calculator {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 16px;
+            max-width: 350px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        #display {
+            background-color: #1e293b;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .calc-btn {
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        
+        .calc-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        .calc-btn:active {
+            transform: translateY(1px);
+        }
+        
+        .calc-btn-number {
+            background-color: #334155;
+        }
+        
+        .calc-btn-operator {
+            background-color: #475569;
+        }
+        
+        .calc-btn-equals {
+            background-color: #3b82f6;
+        }
+        
+        .calc-btn-clear {
+            background-color: #ef4444;
+        }
+        
+        .calc-btn-delete {
+            background-color: #f97316;
+        }
+        
+        .history-item {
+            transition: all 0.3s ease;
+        }
+        
+        .history-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-md py-4 px-6 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="flex items-center">
+                <i class="fas fa-calculator text-blue-600 text-2xl mr-2"></i>
+                <span class="font-bold text-xl text-gray-800">Universe<span class="text-yellow-500">Calculator</span></span>
+            </a>
+            
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#calculators" class="text-gray-600 hover:text-blue-600">Calculators</a>
+                <a href="index.html#features" class="text-gray-600 hover:text-blue-600">Features</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Global Shopping</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-500 hover:text-blue-600">
+                    <i class="fas fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden absolute top-16 left-0 right-0 bg-white shadow-md py-4 px-6">
+            <div class="flex flex-col space-y-4">
+                <a href="index.html#calculators" class="text-gray-600 hover:text-blue-600">Calculators</a>
+                <a href="index.html#features" class="text-gray-600 hover:text-blue-600">Features</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">Global Shopping</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600">About Us</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content Section -->
+    <div class="container mx-auto px-4 py-10">
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Basic Calculator</h1>
+            <p class="text-gray-600">Perform simple arithmetic operations quickly and easily</p>
+        </div>
+        
+        <div class="flex flex-col lg:flex-row gap-6 max-w-4xl mx-auto">
+            <!-- Main Calculator -->
+            <div class="calculator mx-auto lg:mx-0 p-4">
+                <!-- Display -->
+                <div id="display" class="h-24 rounded-lg mb-4 p-4 text-right flex flex-col justify-between">
+                    <div id="expression" class="text-gray-400 text-lg h-8 overflow-x-auto"></div>
+                    <div id="result" class="text-white text-3xl font-semibold overflow-x-auto">0</div>
+                </div>
+                
+                <!-- Buttons -->
+                <div class="grid grid-cols-4 gap-3">
+                    <!-- Row 1 -->
+                    <button class="calc-btn calc-btn-clear rounded-lg h-14 text-white font-medium text-xl" onclick="clearDisplay()">C</button>
+                    <button class="calc-btn calc-btn-operator rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('(')">( </button>
+                    <button class="calc-btn calc-btn-operator rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression(')')"> )</button>
+                    <button class="calc-btn calc-btn-operator rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('/')">/</button>
+                    
+                    <!-- Row 2 -->
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('7')">7</button>
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('8')">8</button>
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('9')">9</button>
+                    <button class="calc-btn calc-btn-operator rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('*')">×</button>
+                    
+                    <!-- Row 3 -->
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('4')">4</button>
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('5')">5</button>
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('6')">6</button>
+                    <button class="calc-btn calc-btn-operator rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('-')">-</button>
+                    
+                    <!-- Row 4 -->
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('1')">1</button>
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('2')">2</button>
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('3')">3</button>
+                    <button class="calc-btn calc-btn-operator rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('+')">+</button>
+                    
+                    <!-- Row 5 -->
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('0')">0</button>
+                    <button class="calc-btn calc-btn-number rounded-lg h-14 text-white font-medium text-xl" onclick="addToExpression('.')">.</button>
+                    <button class="calc-btn calc-btn-delete rounded-lg h-14 text-white font-medium text-xl" onclick="deleteLastChar()">DEL</button>
+                    <button class="calc-btn calc-btn-equals rounded-lg h-14 text-white font-medium text-xl" onclick="calculate()">=</button>
+                </div>
+            </div>
+            
+            <!-- History Section -->
+            <div class="bg-slate-800 p-5 rounded-xl shadow-lg lg:flex-1">
+                <h3 class="text-white text-xl font-semibold mb-4 flex items-center">
+                    <i class="fas fa-history mr-2"></i> 
+                    Calculation History
+                </h3>
+                
+                <div id="history" class="overflow-y-auto max-h-80 space-y-2">
+                    <!-- History items will be added here by JavaScript -->
+                    <div class="text-gray-400 text-center italic">No calculations yet</div>
+                </div>
+                
+                <button id="clear-history" class="mt-4 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition duration-300 w-full">
+                    Clear History
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-10 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">UniverseCalculator</h3>
+                    <p class="text-gray-400 mb-4">Your complete calculation toolbox for everyday needs.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Calculators</h3>
+                    <ul class="space-y-2">
+                        <li><a href="basic-calculator.html" class="text-gray-400 hover:text-white">Basic Calculator</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Scientific Calculator</a></li>
+                        <li><a href="profit-loss-calculator.html" class="text-gray-400 hover:text-white">Profit/Loss Calculator</a></li>
+                        <li><a href="percentage-calculator.html" class="text-gray-400 hover:text-white">Percentage Calculator</a></li>
+                        <li><a href="currency-converter.html" class="text-gray-400 hover:text-white">Currency Converter</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Company</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Feedback</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Terms of Service</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <p class="text-gray-400 mb-2">Have questions or suggestions?</p>
+                    <a href="#" class="text-blue-400 hover:text-blue-300 inline-block mb-4">Send us feedback</a>
+                    <p class="text-gray-400">Email: contact@universecalculator.com</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 UniverseCalculator. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+        
+        // Calculator Logic
+        const expressionElement = document.getElementById('expression');
+        const resultElement = document.getElementById('result');
+        const historyElement = document.getElementById('history');
+        const clearHistoryButton = document.getElementById('clear-history');
+        
+        let currentExpression = '';
+        let calculationHistory = JSON.parse(localStorage.getItem('basicCalcHistory')) || [];
+        
+        // Initialize the calculator
+        function init() {
+            updateDisplay();
+            renderHistory();
+        }
+        
+        // Add a character to the expression
+        function addToExpression(value) {
+            currentExpression += value;
+            updateDisplay();
+        }
+        
+        // Delete the last character from the expression
+        function deleteLastChar() {
+            currentExpression = currentExpression.slice(0, -1);
+            updateDisplay();
+        }
+        
+        // Clear the display
+        function clearDisplay() {
+            currentExpression = '';
+            updateDisplay();
+        }
+        
+        // Update the display
+        function updateDisplay() {
+            expressionElement.textContent = currentExpression;
+            
+            // Try to evaluate the expression in real-time
+            try {
+                if (currentExpression) {
+                    // Replace × with * for evaluation
+                    const expressionToEvaluate = currentExpression.replace(/×/g, '*');
+                    const result = Function('return ' + expressionToEvaluate)();
+                    
+                    if (!isNaN(result) && isFinite(result)) {
+                        resultElement.textContent = result;
+                    }
+                } else {
+                    resultElement.textContent = '0';
+                }
+            } catch (error) {
+                // Do nothing if expression is invalid
+            }
+        }
+        
+        // Calculate the result
+        function calculate() {
+            try {
+                if (currentExpression) {
+                    // Replace × with * for evaluation
+                    const expressionToEvaluate = currentExpression.replace(/×/g, '*');
+                    const result = Function('return ' + expressionToEvaluate)();
+                    
+                    if (!isNaN(result) && isFinite(result)) {
+                        // Add to history
+                        addToHistory(currentExpression, result);
+                        
+                        // Update display
+                        resultElement.textContent = result;
+                        expressionElement.textContent = currentExpression;
+                        currentExpression = result.toString();
+                    }
+                }
+            } catch (error) {
+                resultElement.textContent = 'Error';
+                setTimeout(() => {
+                    resultElement.textContent = '0';
+                    currentExpression = '';
+                    expressionElement.textContent = '';
+                }, 1500);
+            }
+        }
+        
+        // Add a calculation to history
+        function addToHistory(expression, result) {
+            // Create history item
+            const historyItem = {
+                expression: expression,
+                result: result,
+                timestamp: new Date()
+            };
+            
+            // Add to array and limit to 5 items
+            calculationHistory.unshift(historyItem);
+            if (calculationHistory.length > 5) {
+                calculationHistory.pop();
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('basicCalcHistory', JSON.stringify(calculationHistory));
+            
+            // Render history
+            renderHistory();
+        }
+        
+        // Render the history
+        function renderHistory() {
+            if (calculationHistory.length === 0) {
+                historyElement.innerHTML = '<div class="text-gray-400 text-center italic">No calculations yet</div>';
+                return;
+            }
+            
+            historyElement.innerHTML = '';
+            
+            calculationHistory.forEach((item, index) => {
+                const historyItemEl = document.createElement('div');
+                historyItemEl.className = 'history-item p-3 rounded text-white border border-slate-700';
+                
+                const timestamp = new Date(item.timestamp);
+                const timeString = timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                historyItemEl.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-400 text-xs">${timeString}</span>
+                        <button class="text-gray-400 hover:text-white text-xs" onclick="useHistoryItem(${index})">
+                            <i class="fas fa-redo"></i> Use
+                        </button>
+                    </div>
+                    <div class="text-gray-300">${item.expression}</div>
+                    <div class="text-xl font-semibold">${item.result}</div>
+                `;
+                
+                historyElement.appendChild(historyItemEl);
+            });
+        }
+        
+        // Use a history item
+        function useHistoryItem(index) {
+            const item = calculationHistory[index];
+            currentExpression = item.result.toString();
+            updateDisplay();
+        }
+        
+        // Clear history
+        clearHistoryButton.addEventListener('click', () => {
+            calculationHistory = [];
+            localStorage.removeItem('basicCalcHistory');
+            renderHistory();
+        });
+        
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
